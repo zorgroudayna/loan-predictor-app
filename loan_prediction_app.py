@@ -252,27 +252,16 @@ def create_risk_chart(probability):
 # -----------------------
 @st.cache_resource
 def load_model_and_scaler(model_path='ultra_fast_model.pkl', scaler_path='scaler.pkl'):
-    """Load model and scaler with error handling for missing dependencies."""
+    """
+    Load model with workaround for missing tabpfn.preprocessors
+    """
     try:
-        # Try to import tabpfn first
-        try:
-            import tabpfn
-        except ImportError:
-            st.error("""
-            **Dependency Missing**: The `tabpfn` library is required but not installed.
-           
-            Please add `tabpfn` to your requirements.txt file:
-            ```
-            streamlit
-            pandas
-            numpy
-            joblib
-            matplotlib
-            tabpfn
-            ```
-            """)
-            return None, None
-           
+        # Create a dummy preprocessors module if it doesn't exist
+        import types
+        if 'tabpfn.preprocessors' not in sys.modules:
+            preprocessors_module = types.ModuleType('tabpfn.preprocessors')
+            sys.modules['tabpfn.preprocessors'] = preprocessors_module
+            
         loaded = joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model file '{model_path}': {e}")
