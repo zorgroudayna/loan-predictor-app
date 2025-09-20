@@ -1,3 +1,16 @@
+import os
+os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"] = None
+
+import subprocess
+import sys
+
+# Install tabpfn if not already installed
+try:
+    import tabpfn
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "tabpfn"])
+    import tabpfn
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -8,6 +21,8 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import warnings
 warnings.filterwarnings('ignore')
+
+# ... THE REST OF YOUR CODE REMAINS EXACTLY THE SAME ...
 
 # Set page configuration
 st.set_page_config(
@@ -38,7 +53,6 @@ st.markdown("""
     font-family: 'Montserrat-SemiBold';
     src: url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
 }
-
 .main-header {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 800;
@@ -48,7 +62,6 @@ st.markdown("""
     margin-bottom: 2rem;
     letter-spacing: 1px;
 }
-
 .section-header {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
@@ -62,7 +75,6 @@ st.markdown("""
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
 .prediction-card {
     background-color: #F58C29;
     padding: 2rem;
@@ -71,22 +83,18 @@ st.markdown("""
     box-shadow: 0 4px 12px rgba(34,171,197,0.08);
     border: 1px solid #F58C29;
 }
-
 .risk-high {
     color: #F58C29;
     font-weight: bold;
 }
-
 .risk-medium {
     color: #F58C29;
     font-weight: bold;
 }
-
 .risk-low {
     color: #22abc5;
     font-weight: bold;
 }
-
 .stButton>button, button[kind="primary"], .css-1cpxqw2, .css-1emrehy {
     width: 100%;
     background-color: #22abc5 !important;
@@ -103,28 +111,24 @@ st.markdown("""
     margin-top: 18px !important;
     margin-bottom: 8px !important;
 }
-
 .stButton>button:hover, button[kind="primary"]:hover, .css-1cpxqw2:hover, .css-1emrehy:hover, .stButton>button:focus, button[kind="primary"]:focus, .css-1cpxqw2:focus, .css-1emrehy:focus {
     background-color: #F58C29 !important;
     color: #fff !important;
     border: none !important;
     outline: none !important;
 }
-
 .info-label {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 1rem;
     color: #22abc5;
     font-weight: 500;
 }
-
 .info-value {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 1rem;
     color: #F58C29;
     font-weight: 700;
 }
-
 .column-title {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
@@ -138,7 +142,6 @@ st.markdown("""
     background: #22abc5;
     border-radius: 4px 4px 0 0;
 }
-
 .metric-card {
     background-color: #eaf7fa;
     padding: 15px;
@@ -147,7 +150,6 @@ st.markdown("""
     margin-bottom: 10px;
     box-shadow: 0 2px 6px rgba(34,171,197,0.06);
 }
-
 .stTabs [role="tab"] {
     background: #22abc5 !important;
     color: #fff !important;
@@ -163,7 +165,6 @@ st.markdown("""
     letter-spacing: 1px;
     font-size: 1.05rem;
 }
-
 .stTabs [role="tab"][aria-selected="true"] {
     background: #F58C29 !important;
     color: #fff !important;
@@ -171,26 +172,22 @@ st.markdown("""
     border-bottom: none;
     box-shadow: 0 4px 16px rgba(245,140,41,0.10);
 }
-
 .stTabs [role="tab"]:hover {
     background: #F58C29 !important;
     color: #fff !important;
     cursor: pointer;
 }
-
 .stTabs {
     box-shadow: 0 2px 8px rgba(34,171,197,0.07);
     margin-bottom: 24px;
     border-radius: 8px 8px 0 0;
     background: #f7fafd;
 }
-
 label, .stTextInput label, .stNumberInput label, .stSelectbox label {
     border-bottom: 2px solid #22abc5 !important;
     padding-bottom: 2px;
     display: inline-block;
 }
-
 .explanation-card {
     background: white;
     padding: 1.5rem;
@@ -199,19 +196,15 @@ label, .stTextInput label, .stNumberInput label, .stSelectbox label {
     margin-bottom: 1rem;
     border-left: 4px solid #22abc5;
 }
-
 .positive-card {
     border-left-color: #2ecc71;
 }
-
 .negative-card {
     border-left-color: #e74c3c;
 }
-
 .neutral-card {
     border-left-color: #f39c12;
 }
-
 .explanation-title {
     font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
@@ -219,7 +212,6 @@ label, .stTextInput label, .stNumberInput label, .stSelectbox label {
     color: #2c3e50;
     margin-bottom: 0.5rem;
 }
-
 .explanation-content {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 1rem;
@@ -236,12 +228,10 @@ def create_risk_chart(probability):
     # Créer une barre de risque dégradée
     gradient = np.linspace(0, 100, 300).reshape(1, -1)
     ax.imshow(gradient, extent=[0, 100, 0, 1], aspect='auto', cmap='RdYlGn_r')
-   
     # Ajouter un marqueur pour la probabilité actuelle
     ax.axvline(x=probability, color='black', linestyle='--', linewidth=2)
     ax.plot(probability, 0.5, 'ko', markersize=10)
     ax.text(probability, 1.1, f'{probability:.1f}%', ha='center', va='bottom', fontsize=12, fontweight='bold')
-   
     # Personnaliser le graphique
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 1)
@@ -250,23 +240,18 @@ def create_risk_chart(probability):
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
-   
     # Ajouter des étiquettes de risque
     ax.text(10, -0.2, 'Risque Élevé', ha='center', va='top', fontsize=9)
     ax.text(50, -0.2, 'Moyen', ha='center', va='top', fontsize=9)
     ax.text(90, -0.2, 'Risque Faible', ha='center', va='top', fontsize=9)
-   
     plt.tight_layout()
-   
     # Sauvegarder dans le buffer
     buf = BytesIO()
     plt.savefig(buf, format="png", dpi=150, bbox_inches='tight')
     buf.seek(0)
-   
     # Encoder en base64
     data = base64.b64encode(buf.read()).decode("utf-8")
     plt.close()
-   
     return data
 
 # -----------------------
@@ -274,58 +259,63 @@ def create_risk_chart(probability):
 # -----------------------
 @st.cache_resource
 def load_model_and_scaler(model_path='ultra_fast_model.pkl', scaler_path='scaler.pkl'):
-    """
-    Load model and scaler.
-    The joblib file may contain:
-    - a raw estimator, or
-    - a dict with keys like 'model' and/or 'scaler', or
-    - some wrapper object.
-    This function tries to extract an actual estimator and a scaler if present.
-    """
+    """Load model and scaler with error handling for missing dependencies."""
     try:
+        # Try to import tabpfn first
+        try:
+            import tabpfn
+        except ImportError:
+            st.error("""
+            **Dependency Missing**: The `tabpfn` library is required but not installed.
+           
+            Please add `tabpfn` to your requirements.txt file:
+            ```
+            streamlit
+            pandas
+            numpy
+            joblib
+            matplotlib
+            tabpfn
+            ```
+            """)
+            return None, None
+           
         loaded = joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model file '{model_path}': {e}")
         return None, None
-
-    # default
+   
+    # Rest of your loading logic remains the same...
     estimator = None
     scaler = None
-
-    # If loaded is dict-like, try to find estimator & scaler inside
+   
     if isinstance(loaded, dict):
-        # direct keys first
         if 'model' in loaded:
             estimator = loaded['model']
         elif 'estimator' in loaded:
             estimator = loaded['estimator']
-           
         if 'scaler' in loaded:
             scaler = loaded['scaler']
         elif 'preprocessor' in loaded:
             scaler = loaded['preprocessor']
            
-        # If we still don't have an estimator, search values for any object with predict
         if estimator is None:
             for v in loaded.values():
                 if hasattr(v, 'predict') or hasattr(v, 'predict_proba'):
                     estimator = v
                     break
                    
-        # If estimator still None, keep the dict (will be handled later)
         if estimator is None:
             estimator = loaded
     else:
-        # loaded is not a dict: hopefully it's the estimator
         estimator = loaded
-
-    # If no scaler found inside model file, try to load separate scaler.pkl
+       
     if scaler is None:
         try:
             scaler = joblib.load(scaler_path)
         except Exception:
-            scaler = None  # not fatal; we'll warn later
-
+            scaler = None
+           
     return estimator, scaler
 
 # -----------------------
@@ -333,7 +323,6 @@ def load_model_and_scaler(model_path='ultra_fast_model.pkl', scaler_path='scaler
 # -----------------------
 def calculate_derived_features(input_data):
     data = input_data.copy()
-   
     data['total_household_income'] = (
         data.get('borrower_salaire_mensuel', 0.0) +
         data.get('borrower_revenu_foncier', 0.0) +
@@ -341,29 +330,24 @@ def calculate_derived_features(input_data):
         data.get('co_borrower_salaire_mensuel', 0.0) +
         data.get('co_borrower_autres_revenus', 0.0)
     )
-   
     data['total_project_cost'] = (
         data.get('cost_terrain', 0.0) +
         data.get('cost_logement', 0.0) +
         data.get('cost_travaux', 0.0) +
         data.get('cost_frais_notaire', 0.0)
     )
-   
     data['debt_to_income_ratio'] = (
         data.get('montant_credit_initio', 0.0) / data['total_household_income']
         if data['total_household_income'] > 0 else 0.0
     )
-   
     data['apport_percentage'] = (
         data.get('financing_apport_personnel', 0.0) / data['total_project_cost']
         if data['total_project_cost'] > 0 else 0.0
     )
-   
     data['loan_to_value'] = (
         data.get('financing_pret_principal', 0.0) / data['total_project_cost']
         if data['total_project_cost'] > 0 else 0.0
     )
-   
     data['has_viabilisation_costs'] = 1 if data.get('cost_viabilisation', 0) > 0 else 0
     data['has_mobilier_costs'] = 1 if data.get('cost_mobilier', 0) > 0 else 0
     data['has_agency_fees'] = 1 if data.get('cost_agency_fees', 0) > 0 else 0
@@ -383,37 +367,15 @@ def calculate_derived_features(input_data):
 
 def prepare_input_data(input_data, scaler):
     expected_features = [
-        'montant_credit_initio',
-        'co_borrower_categ_socio_prof',
-        'co_borrower_contrat_travail',
-        'borrower_salaire_mensuel',
-        'borrower_revenu_foncier',
-        'borrower_autres_revenus',
-        'co_borrower_salaire_mensuel',
-        'co_borrower_autres_revenus',
-        'project_nature',
-        'project_destination',
-        'project_zone',
-        'project_type_logement',
-        'cost_terrain',
-        'cost_logement',
-        'cost_travaux',
-        'cost_frais_notaire',
-        'financing_apport_personnel',
-        'financing_pret_principal',
-        'total_credit_remaining_amount',
-        'total_credit_monthly_payment',
-        'nombre_of_credits',
-        'net_worth',
-        'number_of_properties',
-        'total_household_income',
-        'total_project_cost',
-        'has_viabilisation_costs',
-        'has_mobilier_costs',
-        'has_agency_fees',
-        'debt_to_income_ratio',
-        'apport_percentage',
-        'loan_to_value'
+        'montant_credit_initio', 'co_borrower_categ_socio_prof', 'co_borrower_contrat_travail',
+        'borrower_salaire_mensuel', 'borrower_revenu_foncier', 'borrower_autres_revenus',
+        'co_borrower_salaire_mensuel', 'co_borrower_autres_revenus', 'project_nature',
+        'project_destination', 'project_zone', 'project_type_logement', 'cost_terrain',
+        'cost_logement', 'cost_travaux', 'cost_frais_notaire', 'financing_apport_personnel',
+        'financing_pret_principal', 'total_credit_remaining_amount', 'total_credit_monthly_payment',
+        'nombre_of_credits', 'net_worth', 'number_of_properties', 'total_household_income',
+        'total_project_cost', 'has_viabilisation_costs', 'has_mobilier_costs', 'has_agency_fees',
+        'debt_to_income_ratio', 'apport_percentage', 'loan_to_value'
     ]
    
     df = pd.DataFrame({f: [0] for f in expected_features})
@@ -423,17 +385,10 @@ def prepare_input_data(input_data, scaler):
             df.at[0, f] = v
            
     numeric_features = [
-        'borrower_salaire_mensuel',
-        'co_borrower_salaire_mensuel',
-        'cost_travaux',
-        'total_household_income',
-        'montant_credit_initio',
-        'total_project_cost',
-        'financing_apport_personnel',
-        'financing_pret_principal',
-        'debt_to_income_ratio',
-        'apport_percentage',
-        'loan_to_value'
+        'borrower_salaire_mensuel', 'co_borrower_salaire_mensuel', 'cost_travaux',
+        'total_household_income', 'montant_credit_initio', 'total_project_cost',
+        'financing_apport_personnel', 'financing_pret_principal', 'debt_to_income_ratio',
+        'apport_percentage', 'loan_to_value'
     ]
    
     for col in numeric_features:
@@ -480,9 +435,7 @@ def get_confidence_level(probability):
 # Générer des explications
 # -----------------------
 def generer_explications(input_data, acceptance_prob):
-    """
-    Génère des explications lisibles par l'homme pour la prédiction.
-    """
+    """Génère des explications lisibles par l'homme pour la prédiction."""
     explications = []
    
     # Statut d'acceptation global
@@ -575,12 +528,13 @@ def main():
             Prédicteur de Demande de Prêt
         </div>
         """, unsafe_allow_html=True)
-
+   
     model, scaler = load_model_and_scaler()
+   
     if model is None:
-        st.error("Le modèle n'a pas pu être chargé. Vérifiez le fichier du modèle.")
+        st.error("Le modèle n'a pas pu être chargé. Vérifiez le fichier du modèle et les dépendances.")
         return
-
+   
     # Define the actual values for dropdowns
     categ_socio_prof_options = {
         "Agriculteurs exploitants": 0,
@@ -631,7 +585,7 @@ def main():
         "Loft": 3,
         "Autre": 4
     }
-
+   
     tab1, tab2, tab3, tab4 = st.tabs(["Informations Emprunteur", "Détails du Projet", "Informations Financières", "Crédits Existants & Actifs"])
    
     with st.form("loan_application_form"):
@@ -647,14 +601,12 @@ def main():
                 st.markdown('<div class="section-header">Informations Co-Emprunteur</div>', unsafe_allow_html=True)
                 co_borrower_salaire_mensuel = st.number_input("Salaire Co-Emprunteur (€)", min_value=0.0, value=0.0, step=100.0, key="cb_salary")
                 co_borrower_autres_revenus = st.number_input("Autres Revenus Co-Emprunteur (€)", min_value=0.0, value=0.0, step=100.0, key="cb_other")
-               
                 co_borrower_categ_socio_prof = st.selectbox(
                     "Catégorie Socio-Professionnelle",
                     options=list(categ_socio_prof_options.keys()),
                     index=0,
                     key="cb_cat"
                 )
-               
                 co_borrower_contrat_travail = st.selectbox(
                     "Contrat de Travail",
                     options=list(contrat_travail_options.keys()),
@@ -666,28 +618,24 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown('<div class="section-header">Détails du Projet</div>', unsafe_allow_html=True)
-               
                 project_nature = st.selectbox(
                     "Nature du Projet",
                     options=list(project_nature_options.keys()),
                     index=0,
                     key="proj_nature"
                 )
-               
                 project_destination = st.selectbox(
                     "Destination du Projet",
                     options=list(project_destination_options.keys()),
                     index=0,
                     key="proj_dest"
                 )
-               
                 project_zone = st.selectbox(
                     "Zone du Projet",
                     options=list(project_zone_options.keys()),
                     index=0,
                     key="proj_zone"
                 )
-               
                 project_type_logement = st.selectbox(
                     "Type de Logement",
                     options=list(project_type_logement_options.keys()),
@@ -768,14 +716,12 @@ def main():
         try:
             prepared = prepare_input_data(input_data, scaler)
            
-            # Determine estimator object (in case 'model' variable is still a dict)
+            # Determine estimator object
             estimator = model
             if isinstance(model, dict):
-                # prefer direct 'model' key
                 if 'model' in model and (hasattr(model['model'], 'predict') or hasattr(model['model'], 'predict_proba')):
                     estimator = model['model']
                 else:
-                    # search values for something that looks like an estimator
                     for v in model.values():
                         if hasattr(v, 'predict') or hasattr(v, 'predict_proba'):
                             estimator = v
@@ -784,11 +730,9 @@ def main():
             # Make prediction with robust handling
             if hasattr(estimator, 'predict_proba'):
                 probs = estimator.predict_proba(prepared)
-                # try common shapes
                 try:
                     acceptance_prob = float(probs[0, 1]) * 100.0
                 except Exception:
-                    # maybe returns prob of positive class only as 1D
                     acceptance_prob = float(probs[0]) * 100.0
             elif hasattr(estimator, 'predict'):
                 pred = estimator.predict(prepared)[0]
@@ -875,7 +819,6 @@ def main():
             fig, ax = plt.subplots(figsize=(10, 6))
             y_pos = np.arange(len(feature_names))
             colors = ['#2ecc71' if val > 0 else '#e74c3c' for val in shap_values[0]]
-           
             ax.barh(y_pos, np.abs(shap_values[0]), color=colors)
             ax.set_yticks(y_pos)
             ax.set_yticklabels(feature_names)
