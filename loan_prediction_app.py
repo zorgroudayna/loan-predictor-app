@@ -253,29 +253,32 @@ def create_risk_chart(probability):
 @st.cache_resource
 def load_model_and_scaler(model_path='ultra_fast_model.pkl', scaler_path='scaler.pkl'):
     """
-    Load model with workaround for missing tabpfn.preprocessors
+    Load model and scaler with tabpfn compatibility fix
     """
     try:
-        # Create a dummy preprocessors module if it doesn't exist
-        import types
-        if 'tabpfn.preprocessors' not in sys.modules:
-            preprocessors_module = types.ModuleType('tabpfn.preprocessors')
-            sys.modules['tabpfn.preprocessors'] = preprocessors_module
+        # Try to install compatible version if needed
+        try:
+            from tabpfn import preprocessors
+        except ImportError:
+            st.warning("tabpfn.preprocessors not found, trying to install compatible version...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "tabpfn==0.1.11"])
+            from tabpfn import preprocessors
             
         loaded = joblib.load(model_path)
     except Exception as e:
         st.error(f"Error loading model file '{model_path}': {e}")
         return None, None
-   
-    # Rest of your loading logic remains the same...
+
+    # ... rest of your existing loading code remains the same
     estimator = None
     scaler = None
-   
+
     if isinstance(loaded, dict):
         if 'model' in loaded:
             estimator = loaded['model']
         elif 'estimator' in loaded:
             estimator = loaded['estimator']
+           
         if 'scaler' in loaded:
             scaler = loaded['scaler']
         elif 'preprocessor' in loaded:
@@ -291,13 +294,13 @@ def load_model_and_scaler(model_path='ultra_fast_model.pkl', scaler_path='scaler
             estimator = loaded
     else:
         estimator = loaded
-       
+
     if scaler is None:
         try:
             scaler = joblib.load(scaler_path)
         except Exception:
             scaler = None
-           
+
     return estimator, scaler
 
 # -----------------------
