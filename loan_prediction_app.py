@@ -1,9 +1,9 @@
 import os
-# Remove any existing value first
-if "STREAMLIT_SERVER_ENABLE_FILE_WATCHER" in os.environ:
-    del os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"]
-# Then set it correctly
+import sys  # <-- ADD THIS LINE
 os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"] = "false"
+
+import subprocess
+# ... rest of your imports
 import streamlit as st
 import pandas as pd
 import numpy as np
