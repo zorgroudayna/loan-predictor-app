@@ -1,16 +1,9 @@
 import os
+# Remove any existing value first
+if "STREAMLIT_SERVER_ENABLE_FILE_WATCHER" in os.environ:
+    del os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"]
+# Then set it correctly
 os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"] = "false"
-
-import subprocess
-import sys
-
-# Install tabpfn if not already installed
-try:
-    import tabpfn
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "tabpfn"])
-    import tabpfn
-
 import streamlit as st
 import pandas as pd
 import numpy as np
