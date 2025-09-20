@@ -1,11 +1,25 @@
-streamlit
-pandas
-numpy
-scikit-learn
-joblib
-matplotlib
-seaborn
-pillow
-python-dateutil
-tabpfn==0.1.12  # Use the older compatible version
-torch>=1.9.0,<2.0.0  # Compatible with tabpfn 0.1.12
+# Core app
+streamlit==1.49.1
+
+# Data processing
+pandas==2.2.3
+numpy==1.26.4
+
+# Machine learning
+scikit-learn==1.5.2
+joblib==1.4.2
+shap==0.45.3
+
+# Visualization
+matplotlib==3.10.0
+seaborn==0.13.2
+plotly==5.24.1
+
+# Utilities
+scipy==1.14.1
+pillow==11.0.0
+python-dateutil==2.9.0
+
+# Model - using the latest compatible version
+tabpfn==2.2.1
+torch==2.4.1
