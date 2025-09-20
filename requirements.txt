@@ -1,25 +1,25 @@
-# Core app
+# Core app - use compatible versions
 streamlit==1.49.1
 
-# Data processing
-pandas==2.2.3
-numpy==1.26.4
+# Data processing - use versions with pre-built wheels
+pandas==2.0.3
+numpy==1.24.3
 
 # Machine learning
-scikit-learn==1.5.2
-joblib==1.4.2
-shap==0.45.3
+scikit-learn==1.3.0
+joblib==1.3.2
+shap==0.42.1
 
 # Visualization
-matplotlib==3.10.0
-seaborn==0.13.2
-plotly==5.24.1
+matplotlib==3.7.1
+seaborn==0.12.2
+plotly==5.15.0
 
 # Utilities
-scipy==1.14.1
-pillow==11.0.0
-python-dateutil==2.9.0
+scipy==1.10.1
+pillow==9.5.0
+python-dateutil==2.8.2
 
-# Model - using the latest compatible version
-tabpfn==2.2.1
-torch==2.4.1
+# Model - skip tabpfn for now to get the app working
+ tabpfn==2.2.1
+ torch==2.0.1
