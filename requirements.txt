@@ -1,35 +1,11 @@
-pip>=25.2
-# Core app
 streamlit
-
-# Data processing
 pandas
 numpy
-
-# Machine learning
 scikit-learn
 joblib
-shap
-
-# Visualization
 matplotlib
 seaborn
-plotly
-
-# Utilities
-scipy
 pillow
 python-dateutil
-
-# Model 
-tabpfn==2.1.3
-torch>=2.0.0
-
-
-streamlit
-pandas
-numpy
-joblib
-matplotlib
-scikit-learn
-tabpfn
+tabpfn==0.1.12  # Use the older compatible version
+torch>=1.9.0,<2.0.0  # Compatible with tabpfn 0.1.12
