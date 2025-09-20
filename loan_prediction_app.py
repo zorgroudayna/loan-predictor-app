@@ -1,5 +1,5 @@
 import os
-os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"] = None
+os.environ["STREAMLIT_SERVER_ENABLE_FILE_WATCHER"] = "false"
 
 import subprocess
 import sys
