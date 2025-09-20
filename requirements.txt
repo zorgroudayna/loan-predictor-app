@@ -24,3 +24,12 @@ python-dateutil
 # Model 
 tabpfn==2.1.3
 torch>=2.0.0
+
+
+streamlit
+pandas
+numpy
+joblib
+matplotlib
+scikit-learn
+tabpfn
