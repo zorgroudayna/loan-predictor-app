@@ -206,7 +206,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------
-# FONCTION DE CRÉATION DE MODÈLE INTÉGRÉE
+# FONCTION DE CRÉATION DE MODÈLE INTÉGRÉE (SANS TabPFN)
 # -----------------------
 @st.cache_resource
 def create_loan_model():
@@ -281,7 +281,7 @@ def create_loan_model():
         # Calculer la précision sur les données d'entraînement
         train_accuracy = model.score(X_scaled, y)
         
-        st.success(f"✅ Modèle intégré créé avec succès! (Précision: {train_accuracy:.1%})")
+        st.success(f"✅ Modèle de prédiction créé avec succès! (Précision: {train_accuracy:.1%})")
         return {'model': model, 'scaler': scaler, 'feature_columns': feature_columns}
         
     except Exception as e:
@@ -289,32 +289,16 @@ def create_loan_model():
         return None
 
 # -----------------------
-# Chargeur de modèle avec fallback intégré
+# Chargeur de modèle SIMPLIFIÉ (sans TabPFN)
 # -----------------------
 @st.cache_resource
-def load_model_and_scaler():
+def load_model():
     """
-    Charge le modèle avec système de fallback intégré
+    Charge le modèle intégré directement - plus d'erreur TabPFN
     """
-    try:
-        # Essayer de charger le modèle existant
-        loaded = joblib.load('ultra_fast_model.pkl')
-        st.success("✅ Modèle principal chargé avec succès!")
-        return loaded, None
-        
-    except FileNotFoundError:
-        st.info("🔄 Création d'un modèle de prédiction intégré...")
-        model_data = create_loan_model()
-        if model_data:
-            return model_data, None
-        else:
-            return None, None
-            
-    except Exception as e:
-        st.error(f"❌ Erreur de chargement: {e}")
-        st.info("🔄 Création d'un modèle de secours...")
-        model_data = create_loan_model()
-        return model_data, None
+    st.info("🔄 Initialisation du modèle de prédiction...")
+    model_data = create_loan_model()
+    return model_data
 
 # -----------------------
 # Caractéristiques dérivées et prétraitement
@@ -393,10 +377,10 @@ def prepare_input_data(input_data, model_data):
 # Aides pour la sortie
 # -----------------------
 def categorize_risk(probability):
-    if probability >= 90: return "Risque Très Faible", 
-    elif probability >= 70: return "Risque Faible", 
-    elif probability >= 50: return "Risque Moyen", 
-    elif probability >= 30: return "Risque Élevé", 
+    if probability >= 90: return "Risque Très Faible", "🟢"
+    elif probability >= 70: return "Risque Faible", "🟡"
+    elif probability >= 50: return "Risque Moyen", "🟠"
+    elif probability >= 30: return "Risque Élevé", "🔴"
     else: return "Risque Très Élevé", "💀"
 
 def get_confidence_level(probability):
@@ -504,11 +488,11 @@ def main():
         </div>
     """, unsafe_allow_html=True)
 
-    # Charger le modèle
-    model_data, _ = load_model_and_scaler()
+    # Charger le modèle (version simplifiée sans TabPFN)
+    model_data = load_model()
     
     if model_data is None:
-        st.error("Impossible de créer ou charger un modèle. L'application ne peut pas fonctionner.")
+        st.error("❌ Impossible de créer le modèle. L'application ne peut pas fonctionner.")
         return
 
     # Définir les options des menus déroulants
@@ -562,7 +546,7 @@ def main():
         "Autre": 4
     }
 
-    # NOUVEAU : Options pour les champs manquants
+    # Options pour les champs manquants
     autorise_documents_options = {
         "Oui": 1,
         "Non": 0
@@ -576,7 +560,7 @@ def main():
         "Veuf/Veuve": 4
     }
 
-    # Interface utilisateur avec tous les onglets originaux
+    # Interface utilisateur avec tous les onglets
     tab1, tab2, tab3, tab4 = st.tabs(["Informations Emprunteur", "Détails du Projet", "Informations Financières", "Crédits Existants & Actifs"])
     
     with st.form("loan_application_form"):
@@ -588,7 +572,7 @@ def main():
                 borrower_revenu_foncier = st.number_input("Revenu Foncier (€)", min_value=0.0, value=0.0, step=100.0, key="b_rental")
                 borrower_autres_revenus = st.number_input("Autres Revenus (€)", min_value=0.0, value=0.0, step=100.0, key="b_other")
                 
-                # NOUVEAUX CHAMPS AJOUTÉS
+                # CHAMPS AJOUTÉS
                 situation_familiale = st.selectbox(
                     "Situation Familiale",
                     options=list(situation_familiale_options.keys()),
@@ -725,14 +709,14 @@ def main():
             prepared_data = prepare_input_data(input_data, model_data)
             
             if prepared_data is None:
-                st.error(" Impossible de préparer les données pour la prédiction.")
+                st.error("❌ Impossible de préparer les données pour la prédiction.")
                 return
             
             # Obtenir le modèle
             model = model_data.get('model')
             
             if model is None:
-                st.error(" Aucun modèle trouvé pour la prédiction.")
+                st.error("❌ Aucun modèle trouvé pour la prédiction.")
                 return
             
             # Faire la prédiction
@@ -768,7 +752,7 @@ def main():
                 st.markdown(f"<h3 style='color: {risk_color}; text-align: center;'>{risk_emoji} {risk_category}</h3>", unsafe_allow_html=True)
            
             # Métriques financières
-            st.subheader("Métriques Financières Calculées")
+            st.subheader("💰 Métriques Financières Calculées")
             info_col1, info_col2 = st.columns(2)
            
             with info_col1:
@@ -801,24 +785,24 @@ def main():
                 ''', unsafe_allow_html=True)
            
             # Recommandations
-            st.markdown('<div class="section-header"> Recommandations</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">💡 Recommandations</div>', unsafe_allow_html=True)
            
             if is_accepted:
                 if acceptance_prob >= 70:
-                    st.success("** Excellente candidature!** Votre demande présente de très bonnes chances d'approbation.")
+                    st.success("**🎉 Excellente candidature!** Votre demande présente de très bonnes chances d'approbation.")
                 else:
                     st.warning("**📝 Candidature acceptable.** Votre demande pourrait être approuvée avec quelques ajustements mineurs.")
             else:
-                st.error("**Candidature à risque.** Nous recommandons d'améliorer certains aspects avant de soumettre.")
+                st.error("**⚠️ Candidature à risque.** Nous recommandons d'améliorer certains aspects avant de soumettre.")
                 
                 if input_data['debt_to_income_ratio'] > 0.4:
-                    st.info("**Suggestion:** Réduisez votre ratio dette/revenu en augmentant vos revenus ou en diminuant le montant du prêt.")
+                    st.info("💡 **Suggestion:** Réduisez votre ratio dette/revenu en augmentant vos revenus ou en diminuant le montant du prêt.")
                 
                 if input_data['apport_percentage'] < 0.1:
-                    st.info("**Suggestion:** Augmentez votre apport personnel à au moins 10% du coût total du projet.")
+                    st.info("💡 **Suggestion:** Augmentez votre apport personnel à au moins 10% du coût total du projet.")
            
             # Graphique d'analyse
-            st.markdown('<div class="section-header">Analyse des Facteurs d\'Influence</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">📈 Analyse des Facteurs d\'Influence</div>', unsafe_allow_html=True)
             
             # Créer un graphique d'analyse des caractéristiques
             feature_names = ['Revenu Total', 'Ratio Dette/Revenu', 'Apport Personnel', 'Montant Prêt', 'Valeur Nette', 'Mensualités']
@@ -849,7 +833,7 @@ def main():
             st.pyplot(fig)
            
         except Exception as e:
-            st.error(f"Erreur lors de la prédiction: {e}")
+            st.error(f"❌ Erreur lors de la prédiction: {e}")
             st.info("💡 Assurez-vous que toutes les valeurs saisies sont valides.")
 
 if __name__ == "__main__":
