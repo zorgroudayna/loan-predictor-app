@@ -393,10 +393,10 @@ def prepare_input_data(input_data, model_data):
 # Aides pour la sortie
 # -----------------------
 def categorize_risk(probability):
-    if probability >= 90: return "Risque Très Faible", "🟢"
-    elif probability >= 70: return "Risque Faible", "🟡"
-    elif probability >= 50: return "Risque Moyen", "🟠"
-    elif probability >= 30: return "Risque Élevé", "🔴"
+    if probability >= 90: return "Risque Très Faible", 
+    elif probability >= 70: return "Risque Faible", 
+    elif probability >= 50: return "Risque Moyen", 
+    elif probability >= 30: return "Risque Élevé", 
     else: return "Risque Très Élevé", "💀"
 
 def get_confidence_level(probability):
@@ -508,7 +508,7 @@ def main():
     model_data, _ = load_model_and_scaler()
     
     if model_data is None:
-        st.error("❌ Impossible de créer ou charger un modèle. L'application ne peut pas fonctionner.")
+        st.error("Impossible de créer ou charger un modèle. L'application ne peut pas fonctionner.")
         return
 
     # Définir les options des menus déroulants
@@ -725,14 +725,14 @@ def main():
             prepared_data = prepare_input_data(input_data, model_data)
             
             if prepared_data is None:
-                st.error("❌ Impossible de préparer les données pour la prédiction.")
+                st.error(" Impossible de préparer les données pour la prédiction.")
                 return
             
             # Obtenir le modèle
             model = model_data.get('model')
             
             if model is None:
-                st.error("❌ Aucun modèle trouvé pour la prédiction.")
+                st.error(" Aucun modèle trouvé pour la prédiction.")
                 return
             
             # Faire la prédiction
@@ -768,7 +768,7 @@ def main():
                 st.markdown(f"<h3 style='color: {risk_color}; text-align: center;'>{risk_emoji} {risk_category}</h3>", unsafe_allow_html=True)
            
             # Métriques financières
-            st.subheader("💰 Métriques Financières Calculées")
+            st.subheader("Métriques Financières Calculées")
             info_col1, info_col2 = st.columns(2)
            
             with info_col1:
@@ -801,24 +801,24 @@ def main():
                 ''', unsafe_allow_html=True)
            
             # Recommandations
-            st.markdown('<div class="section-header">💡 Recommandations</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header"> Recommandations</div>', unsafe_allow_html=True)
            
             if is_accepted:
                 if acceptance_prob >= 70:
-                    st.success("**🎉 Excellente candidature!** Votre demande présente de très bonnes chances d'approbation.")
+                    st.success("** Excellente candidature!** Votre demande présente de très bonnes chances d'approbation.")
                 else:
                     st.warning("**📝 Candidature acceptable.** Votre demande pourrait être approuvée avec quelques ajustements mineurs.")
             else:
-                st.error("**⚠️ Candidature à risque.** Nous recommandons d'améliorer certains aspects avant de soumettre.")
+                st.error("**Candidature à risque.** Nous recommandons d'améliorer certains aspects avant de soumettre.")
                 
                 if input_data['debt_to_income_ratio'] > 0.4:
-                    st.info("💡 **Suggestion:** Réduisez votre ratio dette/revenu en augmentant vos revenus ou en diminuant le montant du prêt.")
+                    st.info("**Suggestion:** Réduisez votre ratio dette/revenu en augmentant vos revenus ou en diminuant le montant du prêt.")
                 
                 if input_data['apport_percentage'] < 0.1:
-                    st.info("💡 **Suggestion:** Augmentez votre apport personnel à au moins 10% du coût total du projet.")
+                    st.info("**Suggestion:** Augmentez votre apport personnel à au moins 10% du coût total du projet.")
            
             # Graphique d'analyse
-            st.markdown('<div class="section-header">📈 Analyse des Facteurs d\'Influence</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">Analyse des Facteurs d\'Influence</div>', unsafe_allow_html=True)
             
             # Créer un graphique d'analyse des caractéristiques
             feature_names = ['Revenu Total', 'Ratio Dette/Revenu', 'Apport Personnel', 'Montant Prêt', 'Valeur Nette', 'Mensualités']
@@ -849,7 +849,7 @@ def main():
             st.pyplot(fig)
            
         except Exception as e:
-            st.error(f"❌ Erreur lors de la prédiction: {e}")
+            st.error(f"Erreur lors de la prédiction: {e}")
             st.info("💡 Assurez-vous que toutes les valeurs saisies sont valides.")
 
 if __name__ == "__main__":
