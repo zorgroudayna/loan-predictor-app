@@ -664,7 +664,7 @@ def main():
                 net_worth = st.number_input("Valeur Nette (€)", min_value=0.0, value=50000.0, step=1000.0, key="net_worth")
                 number_of_properties = st.number_input("Nombre de Propriétés", min_value=0, value=0, step=1, key="num_properties")
 
-        submitted = st.form_submit_button("🎯 Prédire l'Acceptation du Prêt")
+        submitted = st.form_submit_button("Prédire l'Acceptation du Prêt")
 
     # Flux de prédiction
     if submitted:
@@ -736,7 +736,7 @@ def main():
             explications = generer_explications(input_data, acceptance_prob)
             
             # Afficher les résultats
-            st.header("📊 Résultats de la Prédiction")
+            st.header("Résultats de la Prédiction")
             res_col1, res_col2, res_col3 = st.columns(3)
            
             with res_col1:
@@ -749,7 +749,7 @@ def main():
            
             with res_col3:
                 risk_color = "#F58C29" if 'Élevé' in risk_category else "#f39c12" if 'Moyen' in risk_category else "#22abc5"
-                st.markdown(f"<h3 style='color: {risk_color}; text-align: center;'>{risk_emoji} {risk_category}</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='color: {risk_color}; text-align: center;'>{risk_category}</h3>", unsafe_allow_html=True)
            
             # Métriques financières
             st.subheader("Métriques Financières Calculées")
