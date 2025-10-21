@@ -562,6 +562,20 @@ def main():
         "Autre": 4
     }
 
+    # NOUVEAU : Options pour les champs manquants
+    autorise_documents_options = {
+        "Oui": 1,
+        "Non": 0
+    }
+
+    situation_familiale_options = {
+        "Célibataire": 0,
+        "Marié(e)": 1,
+        "Pacsé(e)": 2,
+        "Divorcé(e)": 3,
+        "Veuf/Veuve": 4
+    }
+
     # Interface utilisateur avec tous les onglets originaux
     tab1, tab2, tab3, tab4 = st.tabs(["Informations Emprunteur", "Détails du Projet", "Informations Financières", "Crédits Existants & Actifs"])
     
@@ -569,10 +583,26 @@ def main():
         with tab1:
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown('<div class="section-header">Informations Emprunteur</div>', unsafe_allow_html=True)
+                st.markdown('<div class="section-header">Informations Emprunteur Principal</div>', unsafe_allow_html=True)
                 borrower_salaire_mensuel = st.number_input("Salaire Mensuel (€)", min_value=0.0, value=3000.0, step=100.0, key="b_salary")
                 borrower_revenu_foncier = st.number_input("Revenu Foncier (€)", min_value=0.0, value=0.0, step=100.0, key="b_rental")
                 borrower_autres_revenus = st.number_input("Autres Revenus (€)", min_value=0.0, value=0.0, step=100.0, key="b_other")
+                
+                # NOUVEAUX CHAMPS AJOUTÉS
+                situation_familiale = st.selectbox(
+                    "Situation Familiale",
+                    options=list(situation_familiale_options.keys()),
+                    index=0,
+                    key="family_situation"
+                )
+                
+                autorise_documents = st.selectbox(
+                    "Autorise Documents",
+                    options=list(autorise_documents_options.keys()),
+                    index=0,
+                    key="auth_docs"
+                )
+                
             with col2:
                 st.markdown('<div class="section-header">Informations Co-Emprunteur</div>', unsafe_allow_html=True)
                 co_borrower_salaire_mensuel = st.number_input("Salaire Co-Emprunteur (€)", min_value=0.0, value=2000.0, step=100.0, key="cb_salary")
@@ -682,6 +712,9 @@ def main():
             'cost_viabilisation': cost_viabilisation,
             'cost_mobilier': cost_mobilier,
             'cost_agency_fees': cost_agency_fees,
+            # NOUVEAUX CHAMPS AJOUTÉS
+            'situation_familiale': situation_familiale_options[situation_familiale],
+            'autorise_documents': autorise_documents_options[autorise_documents]
         }
        
         # Calculer les caractéristiques dérivées
